@@ -5,7 +5,6 @@
 #include <fstream>
 #include <cstring>
 #include <map>
-#include <algorithm>
 
 namespace fs = std::filesystem;
 using namespace std;
@@ -188,6 +187,8 @@ int FindTags(string content) {
 	// string.find() ile [[ aranır, ardından indisi ondan sonraki ]] aranır, [['ın bulunduğu karakterden itibaren okunmaya başlanır, 
 	// arada [ veya ] varsa arama iptal edilir, bir sonraki [[ aranır
 
+	if (content == "") return 1;
+
 	vector<int> startindexes;
 	vector<int> endindexes;
 
@@ -239,11 +240,12 @@ int main(int argc, char *argv[])
 	for (string& i : files) 
 	{
 		cout << i << endl;
+		FindTags(ReadFile(i));
 	}
 
-	FindTags(ReadFile("Üniversite/Dersler/Programlama_I.txt"));
-	//FindTagsSamet(ReadFile("Üniversite/Dersler/Programlama_I.txt"));
-
+	//FindTags(ReadFile("Üniversite/Dersler/Programlama_I.txt"));
+	
+	cout << endl << endl << "Tags" << endl;
 	for (string& tag : tags) {
 		cout << tag << endl;
 	}
