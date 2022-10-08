@@ -1,0 +1,3 @@
+Unvan     : Dr. Öğr. Üyesi
+Dersler   : [[ProgramlamaLab]], [[Programlama_I]]
+İletişim  : 02623033560

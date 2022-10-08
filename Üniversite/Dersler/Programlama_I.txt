@@ -1,0 +1,10 @@
+Dersin Kodu        : BLM109
+
+Dersin Adı         : [[Programlama I]]
+
+Öğretim Elemanları : Prof. Dr. [[Ahmet ERDİL]]	erdil@kocaeli.edu.tr	02623033223
+                     Prof. Dr. [[Ahmet SAYAR]]	ahmet.sayar@kocaeli.edu.tr	02623033583
+                     Prof. Dr. [[Hikmet Hakan GÜREL]]	hhakan.gurel@kocaeli.edu.tr	2623032215
+                     Dr. Öğr. Üyesi [[Alev MUTLU]]	alev.mutlu@kocaeli.edu.tr	02623033577
+
+Dersin İçeriği     : Programlama diline giriş. Döngü ve koşul deyimleri. Alt programlar. Karakter (string) işleme. Diğer veri tipleri. Diziler. struct ve union, I/O Yöntemleri, preprocessor kullanımı. Dosyalar. Gösterici (pointer) tip veriler.
