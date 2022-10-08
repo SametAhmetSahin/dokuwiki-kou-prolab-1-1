@@ -182,12 +182,14 @@ vector<string> FindOrphanTags () {
 }
 // tagfinder regex \[{2}[\w| ]*\]{2}
 
-int FindTags(string content) {
+vector <string> FindTags(string content, bool global_vector = true) {
 
 	// string.find() ile [[ aranır, ardından indisi ondan sonraki ]] aranır, [['ın bulunduğu karakterden itibaren okunmaya başlanır, 
 	// arada [ veya ] varsa arama iptal edilir, bir sonraki [[ aranır
 
-	if (content == "") return 1;
+	vector<string> local_tags_vector;
+
+	if (content == "") return local_tags_vector;
 
 	vector<int> startindexes;
 	vector<int> endindexes;
@@ -214,12 +216,14 @@ int FindTags(string content) {
 		}
 		if (!(badtag)) {
 		cout << "TagString:" << tagstring << endl;
-		PushBackUnique(tags, tagstring);
+		if (global_vector) PushBackUnique(tags, tagstring);
+		else PushBackUnique(local_tags_vector, tagstring);
 		}
 	}
 
-	return 0;
+	return local_tags_vector;
 }
+
 
 int main(int argc, char *argv[]) 
 {
