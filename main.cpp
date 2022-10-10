@@ -17,14 +17,18 @@ vector<string> tags;
 
 int PushBackUnique(vector<string>& vector, string element) { // İlk argüman olarak vektörü, ikinci argüman olarak eklenecek elemanı alır. Vektör string tipindedir.
 	bool exists = 0;
+
 	for (string& i : vector) {
 		if (i == element) exists = 1;
 	}
+
 	if (!exists) vector.push_back(element);
+
 	return 0;
 }
 
 int DirectoryScanner(string path) {
+
 	for (const auto& entry : fs::directory_iterator(path))
 	{
 		
@@ -39,10 +43,12 @@ int DirectoryScanner(string path) {
 			PushBackUnique(directories, entry.path().string());
 		}
 	}
+
 	return 0;
 }
 
 string ReadFile(string path) {
+	
 	ifstream file;
 
 	file.open(path);
@@ -119,13 +125,16 @@ vector<string> FindOrphanTags () {
 	vector<string> orphantags;
 
 	for (string& filename : files) {
+
 		for (string& tagname : tags) {
 
 			vector<string> splitted;
+
 			char chararray[filename.length()+1];
 			strcpy(chararray, filename.c_str());
 			
 			char* token = strtok(chararray, "/");
+
 			while (token != NULL) {
 				string stringtoken;
 				stringtoken = token;
@@ -136,11 +145,11 @@ vector<string> FindOrphanTags () {
 			vector<string> filetxts;
 
 			int counter = 0;
+
 			for (string& filetxt : splitted) {
 				counter++;
 				counter %= 3;
 				if (counter == 0) filetxts.push_back(filetxt);
-				
 			}
 
 			vector<string> basenames;
@@ -167,10 +176,13 @@ vector<string> FindOrphanTags () {
 			}
 
 			for (string& convertedname: convertednames) {
+
 				for (string& convertedname: convertednames) {
+
 				if (convertedname != tagname) {
 					cout << tagname << "is an orphan tag!" << endl;
 				}
+
 				}
 			}
 			
@@ -205,16 +217,23 @@ vector <string> FindTags(string content, bool global_vector = true) {
 	}
 
 	for(int i=0; i != startindexes.size()-1; ++i) {
+
 		bool badtag = false;
 		string tagstring = "";
+
 		tagstring = content.substr(startindexes[i]+2, endindexes[i]-startindexes[i]-2); // 2 sayıları [[ ve ]] karakterlerinin bulunmaması içindir. Bulunması gerekirse sayıların kaldırılması yeterlidir.
+		
 		for (int j=0;j<tagstring.length();j++) {
+
 			if ((tagstring[j] == ']') or (tagstring[j] == '[')) {
+
 				cout << "Bad tag!" << endl;
 				badtag = true;
 			}
 		}
+
 		if (!(badtag)) {
+
 		cout << "TagString:" << tagstring << endl;
 		if (global_vector) PushBackUnique(tags, tagstring);
 		else PushBackUnique(local_tags_vector, tagstring);
@@ -228,31 +247,43 @@ vector<int> LineLengthsOfFile(string filepath) {
 	vector <int> linelengths;
 	string line;
 	ifstream file(filepath);
+
     if(file.is_open()) {
+
         while(!file.eof()) {
+
             getline(file,line);
 			//cout << line.length() << endl;
             linelengths.push_back(line.length());
         }
+
         file.close();
     }
+
 	return linelengths;
 }
 
 vector<int> FindLinesOfCharPositions(vector<int> linelengths, vector<int> charpositions) {
 	vector <int> lines;
 	//cout << "Char positions size" << charpositions.size() << endl;
+
 	for (int& pos : charpositions) {
+
 		cout << "Starting new line lookup" << endl;
 		int val = pos; 
 		int linecount = 1;
+
 		for (int& length : linelengths) {
+
 			//cout << "val is: " << val << ", deducting " << length << " from it" << endl;
 			val -= length;
+
 			if (val < 0) {
+
 				lines.push_back(linecount);
 				break;
 			}
+
 			else {
 				linecount++;
 			}
@@ -265,8 +296,11 @@ int FileLineCounter(string filepath) {
 	int count = 0;
 	string line;
 	ifstream file(filepath);
+
     if(file.is_open()) {
+
         while(!file.eof()) {
+
             getline(file,line);
             count++;
         }
@@ -277,12 +311,11 @@ int FileLineCounter(string filepath) {
 
 vector<string> SearchForWord(string word) {
 	bool istag = false;
-
 	
 	for (string& tag : tags) {
 		if (word == tag) {
 			istag = true;
-			cout << word << " is tag!";
+			cout << word << " is tag!" << endl;
 		}
 	}
 	
@@ -298,6 +331,8 @@ vector<string> SearchForWord(string word) {
 			if (pos != -1) foundpositions.push_back(pos);
 		}
 
+		// The comment lines below are for debugging, can be ignored or deleted in the future
+		
 		//if (*(foundpositions.end()) == -1) foundpositions.pop_back(); // -1'i yok eder.
 
 		//cout << "There are " << FileLineCounter(file) << " lines in file " << file << endl;
@@ -310,7 +345,6 @@ vector<string> SearchForWord(string word) {
 		vector<int> lines = FindLinesOfCharPositions(LineLengthsOfFile(file), foundpositions);
 
 		//cout << "lines size: " << lines.size() << endl;
-
 		
 		for (int& line : lines) {
 			cout << "Found word " << word << " at line " << line << " at file " << file << endl;
