@@ -1,19 +1,19 @@
 Etiket Adı - Tekrar Sayısı
 
-Programlama I 3
-Ahmet ERDİL 6
-Ahmet SAYAR 2
-Hikmet Hakan GÜREL 3
-Alev MUTLU 2
-Görsel Programlama 2
-Matematik I 3
-Matematik_I 2
-Programlama_I 3
-Matematik_II 1
-Programlama_II 1
-Nesneye Yönelik Programlama 2
-VeritabanıYönetimi 1
-ProgramlamaLab 1
+Programlama I 0
+Ahmet ERDİL 0
+Ahmet SAYAR 0
+Hikmet Hakan GÜREL 0
+Alev MUTLU 0
+Görsel Programlama 0
+Matematik I 0
+Matematik_I 0
+Programlama_I 0
+Matematik_II 0
+Programlama_II 0
+Nesneye Yönelik Programlama 0
+VeritabanıYönetimi 0
+ProgramlamaLab 0
 
 
 ------------------------

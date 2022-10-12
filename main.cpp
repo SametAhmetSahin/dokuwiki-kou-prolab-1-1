@@ -65,7 +65,23 @@ string ReadFile(string path) {
 	return content;
 }
 
-string ConvertTagnameToFile(u16string tagname) {
+string U16ToString(u16string u16input) {
+	wstring_convert<codecvt_utf8_utf16<char16_t, 0x10ffff, codecvt_mode::little_endian>, char16_t> u8convertor;
+    string output = u8convertor.to_bytes(u16input);
+    if(u8convertor.converted() < output.size())
+        throw runtime_error("incomplete conversion");
+    return output;
+}
+
+u16string StringToU16(string input) {
+	wstring_convert<codecvt_utf8_utf16<char16_t, 0x10ffff, codecvt_mode::little_endian>, char16_t> u16convertor;
+    u16string u16output = u16convertor.from_bytes(input);
+	if(u16convertor.converted() < u16output.size())
+        throw runtime_error("incomplete conversion");
+	return u16output;
+}
+
+string ConvertTagnameToFile(string tagname) {
 	map<u16string, u16string> table;
 	
 	table[u"\u00f6"] = u"o";
@@ -84,26 +100,33 @@ string ConvertTagnameToFile(u16string tagname) {
 	
 	table[u"\u0020"] = u"_";
 
+	//wstring_convert<codecvt<char16_t, char, mbstate_t>,char16_t> u16;
+
+	//u16string u16tagname = u16.from_bytes(tagname);
+
+	
+	u16string u16tagname = StringToU16(tagname);
 	
 	u16string tagname_replaced = u"";
 
-	for (char16_t& character: tagname) {
+	for (char16_t& character: u16tagname) {
 		u16string tempstring = u"";
 		tempstring += character;
 		if (!(table.count(tempstring)))	tagname_replaced += tempstring;
 		else tagname_replaced += table[tempstring];
 	}
 
-	wstring_convert<codecvt_utf8<char16_t>, char16_t> utf8;
-  	string tagname_converted = utf8.to_bytes(tagname_replaced);
 	
-	return tagname_converted;
+	return U16ToString(tagname_replaced);
 }
 
 vector<string> FindOrphanTags () {
 
 	vector<string> orphantags;
 
+	vector <string> convertednames;
+
+	/* 
 	for (string& filename : files) {
 		
 		vector<string> splitted;
@@ -142,47 +165,39 @@ vector<string> FindOrphanTags () {
 		}
 
 		
-		vector <string> convertednames;
-
+		
+		/*
 		for (string& basename: basenames) {
-			//cout << basename << endl;
-			/*
+
 			string tagname_converted = ConvertTagnameToFile(basename);
-			cout << "Basename len:" << basename.length() << endl;
-			cout << "Converted tagname:" << tagname_converted << endl;
-			convertednames.push_back(tagname_converted);
-			cout << "Converted tagname len:" << tagname_converted.length() << endl;
-			*/
 
-			string tagname_converted = "";
-
-			for (char& character : basename) {
-				if (character != '_') tagname_converted += character;
-				else tagname_converted += " ";
-			}
 			cout << "Converted tagname: " << tagname_converted << endl;
 			convertednames.push_back(tagname_converted);
 			
 		}
-
-		for (string& tagname : tags) {
-			bool orphan = 1;
-			
-			for (string& convertedname: convertednames) {
-				if (convertedname == tagname) {
-					orphan = 0;
-					
-				}
-			}
-			if (orphan) {
-				cout << tagname << " is an orphan tag! at file " << filename << endl;
-				PushBackUnique(orphantags, tagname);
-			}
-			
-		}
-
 		
 	}
+
+	*/
+	/*
+	for (string& tagname : tags) {
+		bool orphan = 1;
+		
+		for (string& convertedname: convertednames) {
+			if (convertedname == tagname) {
+				orphan = 0;		
+			}
+		}
+		if (orphan) {
+			//cout << tagname << " is an orphan tag! at file " << filename << endl;
+			PushBackUnique(orphantags, tagname);
+		}
+		
+	}
+	*/
+
+		
+	
 
 	return orphantags;
 }
@@ -304,6 +319,7 @@ int FileLineCounter(string filepath) {
 }
 
 vector<string> SearchForWord(string word, int &totalfindcount) {
+	
 	bool istag = false;
 	totalfindcount = 0;
 	for (string& tag : tags) {
@@ -394,28 +410,12 @@ int main(int argc, char *argv[])
 		//cout << i << endl;
 		FindTags(ReadFile(i));
 	}
-
-	//FindTags(ReadFile("Üniversite/Dersler/Programlama_I.txt"));
-	/*
-	cout << endl << endl << "Tags" << endl;
-	for (string& tag : tags) {
-		cout << tag << endl;
-	}
-	*/
-	
-	
-
-	//cout << ReadFile("Üniversite/Dersler/Programlama_I.txt");
-	
-	/*
-	tags.push_back("[[Programlama I]]");
-
-	
-	*/
 	
 	//cout << "Kelime - Tekrar Sayısı" << endl;
+	
 	string outputcontent = "Etiket Adı - Tekrar Sayısı\n\n";
-	for (auto& tag : tags) {
+	
+	for (string& tag : tags) {
 		int totalfindcount = 0;
 		SearchForWord(tag, totalfindcount);
 		//cout << tag << " " << totalfindcount << endl;
@@ -425,16 +425,22 @@ int main(int argc, char *argv[])
 		outputcontent += tag + " " + to_string(totalfindcount) + "\n";
 
 	}
+	
+	
+	
 
 	outputcontent += "\n\n------------------------\n\nYetim Etiketler\n\n";
 	
-	/* vector<string> orphantags = FindOrphanTags(); 
+	cout << "Yetim etiketler bulunmaya başlanıyor" << endl;
+	vector<string> orphantags = FindOrphanTags(); 
+	cout << "Yetim etiket bulma fonksiyonu bitti" << endl;
 	
+	/* 
 	for (string& orphantag : orphantags) {
 		outputcontent += orphantag;
 	}
-	
 	*/
+	
 	
 	//SearchForWord("Programlama I");
 
@@ -448,6 +454,6 @@ int main(int argc, char *argv[])
 
 	WriteToFile("output.txt", outputcontent);
 
-	//cout << ConvertTagnameToFile(u"Proğramlama İ") << endl;
+	cout << ConvertTagnameToFile("Proğramlama İ") << endl;
 	return 0;
 }
