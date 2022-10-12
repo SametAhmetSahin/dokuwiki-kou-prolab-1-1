@@ -92,6 +92,9 @@ string ConvertTagnameToFile(string tagname) {
 		else tagname_converted += table[character];
 	}
 
+
+	cout << "Converted " << tagname << " to " << tagname_converted << endl;
+
 	/*
 	
 	for (char & character : tagname) {
@@ -128,75 +131,80 @@ vector<string> FindOrphanTags () {
 		
 		vector<string> splitted;
 
-			char chararray[filename.length()+1];
-			strcpy(chararray, filename.c_str());
-			
-			char* token = strtok(chararray, "/");
+		char chararray[filename.length()+1];
+		strcpy(chararray, filename.c_str());
+		
+		char* token = strtok(chararray, "/");
 
-			while (token != NULL) {
-				string stringtoken;
-				stringtoken = token;
-				splitted.push_back(stringtoken);
-				token = strtok(NULL, "/");
+		while (token != NULL) {
+			string stringtoken;
+			stringtoken = token;
+			splitted.push_back(stringtoken);
+			token = strtok(NULL, "/");
+		}
+		
+		vector<string> filetxts;
+
+		int counter = 0;
+
+		for (string& filetxt : splitted) {
+			counter++;
+			counter %= 3;
+			if (counter == 0) filetxts.push_back(filetxt);
+		}
+
+		vector<string> basenames;
+
+		for (string& filetxt: filetxts) {
+			char chararray[filetxt.length()+1];
+			strcpy(chararray, filetxt.c_str());
+		
+			char* token = strtok(chararray, ".");
+			string tokenstring = token;
+			basenames.push_back(tokenstring);
+		}
+
+		
+		vector <string> convertednames;
+
+		for (string& basename: basenames) {
+			//cout << basename << endl;
+			/*
+			string tagname_converted = ConvertTagnameToFile(basename);
+			cout << "Basename len:" << basename.length() << endl;
+			cout << "Converted tagname:" << tagname_converted << endl;
+			convertednames.push_back(tagname_converted);
+			cout << "Converted tagname len:" << tagname_converted.length() << endl;
+			*/
+
+			string tagname_converted = "";
+
+			for (char& character : basename) {
+				if (character != '_') tagname_converted += character;
+				else tagname_converted += " ";
 			}
+			cout << "Converted tagname: " << tagname_converted << endl;
+			convertednames.push_back(tagname_converted);
 			
-			vector<string> filetxts;
-
-			int counter = 0;
-
-			for (string& filetxt : splitted) {
-				counter++;
-				counter %= 3;
-				if (counter == 0) filetxts.push_back(filetxt);
-			}
-
-			vector<string> basenames;
-
-			for (string& filetxt: filetxts) {
-				char chararray[filetxt.length()+1];
-				strcpy(chararray, filetxt.c_str());
-			
-				char* token = strtok(chararray, ".");
-				string tokenstring = token;
-				basenames.push_back(tokenstring);
-			}
-
-			
-			vector <string> convertednames;
-
-			for (string& basename: basenames) {
-				//cout << basename << endl;
-				/*
-				string tagname_converted = ConvertTagnameToFile(basename);
-				cout << "Basename len:" << basename.length() << endl;
-				cout << "Converted tagname:" << tagname_converted << endl;
-				convertednames.push_back(tagname_converted);
-				cout << "Converted tagname len:" << tagname_converted.length() << endl;
-				*/
-
-				string tagname_converted = "";
-
-				for (char& character : basename) {
-					if (character != '_') tagname_converted += character;
-					else tagname_converted += " ";
-				}
-				cout << "Converted tagname: " << tagname_converted << endl;
-				convertednames.push_back(tagname_converted);
-				
-			}
-
-			
+		}
 
 		for (string& tagname : tags) {
-
+			bool orphan = 1;
+			
 			for (string& convertedname: convertednames) {
-				if (convertedname != tagname) {
-					cout << tagname << " is an orphan tag! at file " << filename << endl;
-					PushBackUnique(orphantags, tagname);
+				if (convertedname == tagname) {
+					orphan = 0;
+					
 				}
+			}
+			if (orphan) {
+				cout << tagname << " is an orphan tag! at file " << filename << endl;
+				PushBackUnique(orphantags, tagname);
 			}
 			
 		}
+
+		
 	}
 
 	return orphantags;
@@ -364,6 +372,9 @@ vector<string> SearchForWord(string word) {
 
 int main(int argc, char *argv[]) 
 {
+
+	setlocale(LC_ALL, "tr-TR.UTF-8");
+
 	DirectoryScanner("Üniversite");
 	
 	//cout << "Directories" << endl << endl;
@@ -400,11 +411,13 @@ int main(int argc, char *argv[])
 	
 	SearchForWord("Programlama I");
 
+	/* 
 	vector<string> orphantags = FindOrphanTags();
 
 	for (string& i : orphantags) {
 		cout << "OrphanTag: " << i << endl;
 	}
+	*/
 
 	return 0;
 }
