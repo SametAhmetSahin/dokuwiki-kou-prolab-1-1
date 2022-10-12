@@ -65,60 +65,37 @@ string ReadFile(string path) {
 	return content;
 }
 
-string ConvertTagnameToFile(string tagname) {
-	map<char, char> table;
-	table['ö'] = 'o';
-	table['ü'] = 'u';
-	table['ğ'] = 'g';
-	table['ş'] = 's';
-	table['ç'] = 'c';
-	table['ı'] = 'i';
-
-	table['Ö'] = 'O';
-	table['Ü'] = 'U';
-	table['Ğ'] = 'G';
-	table['Ş'] = 'S';
-	table['Ç'] = 'C';
-	table['İ'] = 'I';
+string ConvertTagnameToFile(u16string tagname) {
+	map<u16string, u16string> table;
 	
-	table[' '] = '_';
-
-	map<char, char> :: iterator iter;
-
-	string tagname_converted = "";
+	table[u"\u00f6"] = u"o";
+	table[u"\u00fc"] = u"u";
+	table[u"\u011f"] = u"g";
+	table[u"\u015f"] = u"s";
+	table[u"\u00e7"] = u"c";
+	table[u"\u0131"] = u"i";
 	
-	for (char& character: tagname) {
-		if (!(table.count(character))) tagname_converted += character;
-		else tagname_converted += table[character];
+	table[u"\u00d6"] = u"O";
+	table[u"\u00dc"] = u"U";
+	table[u"\u011e"] = u"G";
+	table[u"\u015e"] = u"S";
+	table[u"\u00c7"] = u"C";
+	table[u"\u0130"] = u"I";
+	
+	table[u"\u0020"] = u"_";
+
+	
+	u16string tagname_replaced = u"";
+
+	for (char16_t& character: tagname) {
+		u16string tempstring = u"";
+		tempstring += character;
+		if (!(table.count(tempstring)))	tagname_replaced += tempstring;
+		else tagname_replaced += table[tempstring];
 	}
 
-
-	cout << "Converted " << tagname << " to " << tagname_converted << endl;
-
-	/*
-	
-	for (char & character : tagname) {
-		for (auto element:table) {
-		if (element.first != character) {
-			tagname_converted += character;
-			break;
-		}
-		else {
-			tagname_converted += element.second;
-			
-		}
-		}
-	}
-	*/
-	
-	/*
-	for (auto element:table) {
-
-		replace(tagname_converted.begin(), tagname_converted.end(), element.first, element.second);
-
-	}
-	*/
-	
+	wstring_convert<codecvt_utf8<char16_t>, char16_t> utf8;
+  	string tagname_converted = utf8.to_bytes(tagname_replaced);
 	
 	return tagname_converted;
 }
@@ -244,7 +221,7 @@ vector <string> FindTags(string content, bool global_vector = true) {
 
 			if ((tagstring[j] == ']') or (tagstring[j] == '[')) {
 
-				cout << "Bad tag!" << endl;
+				//cout << "Bad tag!" << endl;
 				badtag = true;
 			}
 		}
@@ -383,10 +360,24 @@ int WriteToFile(string filename, string content) {
 	file.close();
 }
 
+string ConvertCharToHex(char character) {
+	std::stringstream ss;
+	cout << ((int) character) + 320 << endl;
+	ss << std::hex << ((int) character) + 320;
+	
+	string mystr = ss.str();
+	while (mystr.length() < 4) {
+		mystr = "0" + mystr;
+	}
+	mystr = mystr;
+	return mystr;
+
+}
+
 int main(int argc, char *argv[]) 
 {
 
-	setlocale(LC_ALL, "tr-TR.UTF-8");
+	setlocale(LC_ALL, "tr-TR.ISO-8859-1");
 
 	DirectoryScanner("Üniversite");
 	
@@ -423,7 +414,7 @@ int main(int argc, char *argv[])
 	*/
 	
 	//cout << "Kelime - Tekrar Sayısı" << endl;
-	string outputcontent = "Kelime - Tekrar Sayısı\n";
+	string outputcontent = "Etiket Adı - Tekrar Sayısı\n\n";
 	for (auto& tag : tags) {
 		int totalfindcount = 0;
 		SearchForWord(tag, totalfindcount);
@@ -434,6 +425,16 @@ int main(int argc, char *argv[])
 		outputcontent += tag + " " + to_string(totalfindcount) + "\n";
 
 	}
+
+	outputcontent += "\n\n------------------------\n\nYetim Etiketler\n\n";
+	
+	/* vector<string> orphantags = FindOrphanTags(); 
+	
+	for (string& orphantag : orphantags) {
+		outputcontent += orphantag;
+	}
+	
+	*/
 	
 	//SearchForWord("Programlama I");
 
@@ -447,5 +448,6 @@ int main(int argc, char *argv[])
 
 	WriteToFile("output.txt", outputcontent);
 
+	//cout << ConvertTagnameToFile(u"Proğramlama İ") << endl;
 	return 0;
 }

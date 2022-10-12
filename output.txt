@@ -1,4 +1,5 @@
-Kelime - Tekrar Sayısı
+Etiket Adı - Tekrar Sayısı
+
 Programlama I 3
 Ahmet ERDİL 6
 Ahmet SAYAR 2
@@ -13,4 +14,10 @@ Programlama_II 1
 Nesneye Yönelik Programlama 2
 VeritabanıYönetimi 1
 ProgramlamaLab 1
+
+
+------------------------
+
+Yetim Etiketler
+
 
