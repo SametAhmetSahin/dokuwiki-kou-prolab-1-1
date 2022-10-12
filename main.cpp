@@ -125,10 +125,8 @@ vector<string> FindOrphanTags () {
 	vector<string> orphantags;
 
 	for (string& filename : files) {
-
-		for (string& tagname : tags) {
-
-			vector<string> splitted;
+		
+		vector<string> splitted;
 
 			char chararray[filename.length()+1];
 			strcpy(chararray, filename.c_str());
@@ -163,29 +161,40 @@ vector<string> FindOrphanTags () {
 				basenames.push_back(tokenstring);
 			}
 
+			
 			vector <string> convertednames;
 
 			for (string& basename: basenames) {
 				//cout << basename << endl;
+				/*
 				string tagname_converted = ConvertTagnameToFile(basename);
 				cout << "Basename len:" << basename.length() << endl;
 				cout << "Converted tagname:" << tagname_converted << endl;
 				convertednames.push_back(tagname_converted);
 				cout << "Converted tagname len:" << tagname_converted.length() << endl;
+				*/
+
+				string tagname_converted = "";
+
+				for (char& character : basename) {
+					if (character != '_') tagname_converted += character;
+					else tagname_converted += " ";
+				}
+				cout << "Converted tagname: " << tagname_converted << endl;
+				convertednames.push_back(tagname_converted);
 				
 			}
 
+			
+
+		for (string& tagname : tags) {
+
 			for (string& convertedname: convertednames) {
-
-				for (string& convertedname: convertednames) {
-
 				if (convertedname != tagname) {
-					cout << tagname << "is an orphan tag!" << endl;
-				}
-
+					cout << tagname << " is an orphan tag! at file " << filename << endl;
+					PushBackUnique(orphantags, tagname);
 				}
 			}
-			
 			
 		}
 	}
@@ -386,10 +395,16 @@ int main(int argc, char *argv[])
 	/*
 	tags.push_back("[[Programlama I]]");
 
-	vector<string> orphantags = FindOrphanTags();
+	
 	*/
 	
 	SearchForWord("Programlama I");
+
+	vector<string> orphantags = FindOrphanTags();
+
+	for (string& i : orphantags) {
+		cout << "OrphanTag: " << i << endl;
+	}
 
 	return 0;
 }
