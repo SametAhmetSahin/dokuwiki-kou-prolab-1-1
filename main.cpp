@@ -286,7 +286,7 @@ vector<int> FindLinesOfCharPositions(vector<int> linelengths, vector<int> charpo
 
 	for (int& pos : charpositions) {
 
-		cout << "Starting new line lookup" << endl;
+		//cout << "Starting new line lookup" << endl;
 		int val = pos; 
 		int linecount = 1;
 
@@ -326,13 +326,13 @@ int FileLineCounter(string filepath) {
 	return count - 1;
 }
 
-vector<string> SearchForWord(string word) {
+vector<string> SearchForWord(string word, int &totalfindcount) {
 	bool istag = false;
-	
+	totalfindcount = 0;
 	for (string& tag : tags) {
 		if (word == tag) {
 			istag = true;
-			cout << word << " is tag!" << endl;
+			//cout << word << " is tag!" << endl;
 		}
 	}
 	
@@ -364,10 +364,23 @@ vector<string> SearchForWord(string word) {
 		//cout << "lines size: " << lines.size() << endl;
 		
 		for (int& line : lines) {
-			cout << "Found word " << word << " at line " << line << " at file " << file << endl;
+			//cout << "Found word " << word << " at line " << line << " at file " << file << endl;
 		}
+
+		totalfindcount += foundpositions.size();
 	}
+
+
 	
+	
+}
+
+int WriteToFile(string filename, string content) {
+	ofstream file;
+	file.open(filename);
+
+	file << content << endl;
+	file.close();
 }
 
 int main(int argc, char *argv[]) 
@@ -409,7 +422,20 @@ int main(int argc, char *argv[])
 	
 	*/
 	
-	SearchForWord("Programlama I");
+	//cout << "Kelime - Tekrar Sayısı" << endl;
+	string outputcontent = "Kelime - Tekrar Sayısı\n";
+	for (auto& tag : tags) {
+		int totalfindcount = 0;
+		SearchForWord(tag, totalfindcount);
+		//cout << tag << " " << totalfindcount << endl;
+		
+		
+
+		outputcontent += tag + " " + to_string(totalfindcount) + "\n";
+
+	}
+	
+	//SearchForWord("Programlama I");
 
 	/* 
 	vector<string> orphantags = FindOrphanTags();
@@ -418,6 +444,8 @@ int main(int argc, char *argv[])
 		cout << "OrphanTag: " << i << endl;
 	}
 	*/
+
+	WriteToFile("output.txt", outputcontent);
 
 	return 0;
 }
