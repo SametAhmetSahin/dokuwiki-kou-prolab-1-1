@@ -81,7 +81,7 @@ u16string StringToU16(string input) {
 	return u16output;
 }
 
-string ConvertTagnameToFile(string tagname) {
+string ConvertTagnameToFilename(string tagname) {
 	map<u16string, u16string> table;
 	
 	table[u"\u00f6"] = u"o";
@@ -318,52 +318,29 @@ int FileLineCounter(string filepath) {
 	return count - 1;
 }
 
-vector<string> SearchForWord(string word, int &totalfindcount) {
-	
+vector<int> SearchForWord(string word, string file) {
+
 	bool istag = false;
-	totalfindcount = 0;
+	
 	for (string& tag : tags) {
 		if (word == tag) {
 			istag = true;
-			//cout << word << " is tag!" << endl;
 		}
 	}
 	
-	for (string& file : files) {
-		vector<int> foundpositions;
-		int pos = 0;
-		//cout << "Reading " << file << endl;
-		string content = ReadFile(file);
+	
+	vector<int> foundpositions;
 
-		
-		while (pos < content.length() && (content.find(word) != string::npos)) {
-			pos = content.find(word, pos+1);
-			if (pos != -1) foundpositions.push_back(pos);
-		}
-
-		// The comment lines below are for debugging, can be ignored or deleted in the future
-		
-		//if (*(foundpositions.end()) == -1) foundpositions.pop_back(); // -1'i yok eder.
-
-		//cout << "There are " << FileLineCounter(file) << " lines in file " << file << endl;
-		//cout << " found positions size is " << foundpositions.size() << " for word " << word << " for file " << file << endl;
-		/*
-		for (int& pos : foundpositions) {
-			cout << "Foundpos " << pos << endl; 
-		} */
-		
-		vector<int> lines = FindLinesOfCharPositions(LineLengthsOfFile(file), foundpositions);
-
-		//cout << "lines size: " << lines.size() << endl;
-		
-		for (int& line : lines) {
-			//cout << "Found word " << word << " at line " << line << " at file " << file << endl;
-		}
-
-		totalfindcount += foundpositions.size();
+	int pos = 0;
+	//cout << "Reading " << file << endl;
+	string content = ReadFile(file);
+	
+	while (pos < content.length() && (content.find(word) != string::npos)) {
+		pos = content.find(word, pos+1);
+		if (pos != -1) foundpositions.push_back(pos);
 	}
 
-
+	return foundpositions;
 	
 	
 }
@@ -415,16 +392,24 @@ int main(int argc, char *argv[])
 	
 	string outputcontent = "Etiket Adı - Tekrar Sayısı\n\n";
 	
+	
 	for (string& tag : tags) {
+
 		int totalfindcount = 0;
-		SearchForWord(tag, totalfindcount);
+
+		for (string& file : files) {
+		vector<int> foundpositions = SearchForWord(tag, file);
 		//cout << tag << " " << totalfindcount << endl;
+		totalfindcount += foundpositions.size();
 		
+		}
+		
+		outputcontent += tag + " " + to_string(totalfindcount) + "\n";
 		
 
-		outputcontent += tag + " " + to_string(totalfindcount) + "\n";
 
 	}
+	
 	
 	
 	
@@ -441,8 +426,22 @@ int main(int argc, char *argv[])
 	}
 	*/
 	
+	for (string& file : files) 
+	{
+		//cout << i << endl;
+		vector<int> foundpositions = SearchForWord("Programlama I", file);
+		vector<int> lines = FindLinesOfCharPositions(LineLengthsOfFile(file), foundpositions);
+		if (foundpositions.size() != 0) {
+		string coutstring = "Found Programlama I at lines ";
+		for (int& line : lines) coutstring += to_string(line) + " ";
+
+		cout << coutstring << endl;
+		}
+	}
 	
-	//SearchForWord("Programlama I");
+
+	
+
 
 	/* 
 	vector<string> orphantags = FindOrphanTags();
@@ -454,6 +453,6 @@ int main(int argc, char *argv[])
 
 	WriteToFile("output.txt", outputcontent);
 
-	cout << ConvertTagnameToFile("Proğramlama İ") << endl;
+	cout << ConvertTagnameToFilename("Proğramlama İ") << endl;
 	return 0;
 }
