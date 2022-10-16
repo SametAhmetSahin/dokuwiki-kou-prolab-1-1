@@ -20,4 +20,12 @@ ProgramlamaLab 1
 
 Yetim Etiketler
 
+Ahmet ERDİL
+Ahmet SAYAR
+Hikmet Hakan GÜREL
+Alev MUTLU
+Görsel Programlama
+Nesneye Yönelik Programlama
+VeritabanıYönetimi
+ProgramlamaLab
 

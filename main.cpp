@@ -124,9 +124,9 @@ vector<string> FindOrphanTags () {
 
 	vector<string> orphantags;
 
-	vector <string> convertednames;
+	vector<string> basenames;
 
-	/* 
+	
 	for (string& filename : files) {
 		
 		vector<string> splitted;
@@ -153,7 +153,7 @@ vector<string> FindOrphanTags () {
 			if (counter == 0) filetxts.push_back(filetxt);
 		}
 
-		vector<string> basenames;
+		
 
 		for (string& filetxt: filetxts) {
 			char chararray[filetxt.length()+1];
@@ -166,25 +166,18 @@ vector<string> FindOrphanTags () {
 
 		
 		
-		/*
-		for (string& basename: basenames) {
-
-			string tagname_converted = ConvertTagnameToFile(basename);
-
-			cout << "Converted tagname: " << tagname_converted << endl;
-			convertednames.push_back(tagname_converted);
-			
-		}
+		
+		
 		
 	}
 
-	*/
-	/*
+	
 	for (string& tagname : tags) {
 		bool orphan = 1;
 		
-		for (string& convertedname: convertednames) {
-			if (convertedname == tagname) {
+		for (string& basename : basenames) {
+			cout << "basename: " << basename << " converted_name: " << ConvertTagnameToFilename(tagname) << endl;
+			if (basename == ConvertTagnameToFilename(tagname)) {
 				orphan = 0;		
 			}
 		}
@@ -194,7 +187,7 @@ vector<string> FindOrphanTags () {
 		}
 		
 	}
-	*/
+	
 
 		
 	
@@ -409,10 +402,6 @@ int main(int argc, char *argv[])
 
 
 	}
-	
-	
-	
-	
 
 	outputcontent += "\n\n------------------------\n\nYetim Etiketler\n\n";
 	
@@ -420,11 +409,10 @@ int main(int argc, char *argv[])
 	vector<string> orphantags = FindOrphanTags(); 
 	cout << "Yetim etiket bulma fonksiyonu bitti" << endl;
 	
-	/* 
+	
 	for (string& orphantag : orphantags) {
-		outputcontent += orphantag;
+		outputcontent += orphantag + "\n";
 	}
-	*/
 	
 	for (string& file : files) 
 	{
@@ -438,18 +426,11 @@ int main(int argc, char *argv[])
 		cout << coutstring << endl;
 		}
 	}
-	
-
-	
-
-
-	/* 
-	vector<string> orphantags = FindOrphanTags();
 
 	for (string& i : orphantags) {
 		cout << "OrphanTag: " << i << endl;
 	}
-	*/
+	
 
 	WriteToFile("output.txt", outputcontent);
 
