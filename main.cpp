@@ -318,7 +318,7 @@ int FileLineCounter(string filepath) {
 	return count - 1;
 }
 
-vector<int> SearchForWord(string word, string file) {
+vector<int> SearchForWordInFile(string word, string file) {
 
 	bool istag = false;
 	
@@ -398,7 +398,7 @@ int main(int argc, char *argv[])
 		int totalfindcount = 0;
 
 		for (string& file : files) {
-		vector<int> foundpositions = SearchForWord(tag, file);
+		vector<int> foundpositions = SearchForWordInFile(tag, file);
 		//cout << tag << " " << totalfindcount << endl;
 		totalfindcount += foundpositions.size();
 		
@@ -429,7 +429,7 @@ int main(int argc, char *argv[])
 	for (string& file : files) 
 	{
 		//cout << i << endl;
-		vector<int> foundpositions = SearchForWord("Programlama I", file);
+		vector<int> foundpositions = SearchForWordInFile("Programlama I", file);
 		vector<int> lines = FindLinesOfCharPositions(LineLengthsOfFile(file), foundpositions);
 		if (foundpositions.size() != 0) {
 		string coutstring = "Found Programlama I at lines ";
