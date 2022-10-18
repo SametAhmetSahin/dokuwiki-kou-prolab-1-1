@@ -13,6 +13,34 @@ vector<string> files;
 vector<string> directories;
 vector<string> tags;
 
+int isRunning = 1;
+
+string menuPage_MainMenu = "DokuWiki Kocaeli Üniversitesi\n"
+							"\n"
+							"1) Kelime/Etiket Ara\n"
+							"2) Etiket Güncelle\n"
+							"3) Dosyaya Yazdır\n"
+							"\n"
+							"0) Çıkış\n"
+							"\n"
+							"Seçiminizi giriniz: ";
+
+string menuPage_Search_Menu =	"Aramak istediğiniz kelime/etiketi giriniz: ";
+
+string menuPage_Search_Fail =	"\nAradığınız kelime/etiket bulunamadı.\n";
+
+string menuPage_UpdateTag_RequestOldTag =	"Değiştirmek istediğiniz etiketi giriniz: ";
+string menuPage_UpdateTag_RequestNewTag =	"Yeni etiket adını giriniz: ";
+string menuPage_UpdateTag_Updated =	"\nEtiketler güncellendi.\n";
+
+string menuPage_PrintOutput = "Bilgiler output.txt dosyasına yazdırıldı.\n";
+
+string menuPage_ReturnToMainMenu =	"\nAna menüye dönmek için 1 yazıp ENTER'a basınız.\n";
+
+string menuPage_ExitProgram =	"DokuWiki'den çıkılıyor.\n";
+
+int menuIndex = 9;
+int oldMenuIndex;
 
 // snake_case for variables, PascalCase for functions
 
@@ -586,13 +614,150 @@ int DumpToFilePartTwo() {
 	return 0;
 }
 
+void MainMenu()
+{
+	cout << menuPage_MainMenu;
+	cin >> menuIndex;
+}
+
+void SearchMenu()
+{
+	cout << menuPage_Search_Menu;
+	string searchWord;
+	
+	cin.clear();
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	
+	getline(cin, searchWord);
+
+	int isFoundAny = 0;
+
+	for(string& file : files)
+	{
+		vector<int> foundPoses = SearchForWordInFile(searchWord, file);
+
+		if(foundPoses.size() > 0)
+		{
+			if(!isFoundAny)	cout << endl << "'" << searchWord << "' kelimesi:" << endl;
+			isFoundAny = 1;
+
+			cout << file << " dosyası içinde ";
+
+			vector<int> foundLines = FindLinesOfCharPositions(LineLengthsOfFile(file), foundPoses);
+
+			for(int line : foundLines)
+			{
+				cout << line << ((line == foundLines.at(foundLines.size() - 1)) ? ". " : ", ");
+			}
+
+			cout << ((foundPoses.size() > 1) ? "satırlarda bulundu." : "satırda bulundu.") << endl;
+		}
+	}
+
+	if(!isFoundAny)	cout << menuPage_Search_Fail;
+	cout << menuPage_ReturnToMainMenu;
+	//system("read");// -n 1 -s -r -p 'Press any key to continue'");
+	//system("read");
+	string pressentertocontinue = "a";
+	cin >> pressentertocontinue;
+	menuIndex = 9;
+	return;
+}
+
+void UpdateTagMenu()
+{
+	string oldTag, newTag;
+	cout << menuPage_UpdateTag_RequestOldTag;
+
+	cin.clear();
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+	getline(cin, oldTag);
+
+
+	cout << menuPage_UpdateTag_RequestNewTag;
+	
+	cin.clear();
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+	
+	getline(cin, newTag);
+
+	DumpToFile();
+	UpdateTags(oldTag, newTag);
+	UpdateIndexing();
+	DumpToFilePartTwo();
+
+	cout << menuPage_UpdateTag_Updated;
+	cout << menuPage_ReturnToMainMenu;
+
+	string pressentertocontinue;
+	cin >> pressentertocontinue;
+
+	menuIndex = 9;
+
+	return;
+}
+
+void WriteToOutput()
+{
+	DumpToFile();
+
+	cout << menuPage_PrintOutput;
+	cout << menuPage_ReturnToMainMenu;
+
+	string pressentertocontinue;
+	cin >> pressentertocontinue;
+
+	menuIndex = 9;
+}
+
+int HandleMenu()
+{
+	switch(menuIndex)
+	{
+		case 9:
+			system("clear");
+			MainMenu();
+			break;
+		
+		case 1:
+			system("clear");
+			SearchMenu();
+			break;
+		
+		case 2:
+			system("clear");
+			UpdateTagMenu();
+			break;
+
+		case 3:
+			system("clear");
+			WriteToOutput();
+			break;
+
+		case 0:
+			system("clear");
+			cout << menuPage_ExitProgram;
+			isRunning = 0;
+			break;
+		
+		default:
+			break;
+	}
+
+	return 0;
+}
 
 int main(int argc, char *argv[]) 
 {
+	oldMenuIndex = menuIndex = 9;
 
 	setlocale(LC_ALL, "tr-TR.ISO-8859-1");
-	
+
 	UpdateIndexing();
+
+	/*
 
 	DumpToFile();
 
@@ -600,7 +765,18 @@ int main(int argc, char *argv[])
 
 	UpdateIndexing();
 	
-	DumpToFilePartTwo();
+	DumpToFilePartTwo();*/
+
+	HandleMenu();
+
+	while(isRunning)
+	{
+		if(menuIndex != oldMenuIndex)
+		{
+			oldMenuIndex = menuIndex;
+			HandleMenu();
+		}
+	}
 
 	return 0;
 }
