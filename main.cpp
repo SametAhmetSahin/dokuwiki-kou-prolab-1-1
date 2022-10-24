@@ -320,7 +320,7 @@ vector <string> FindTags(string content, bool global_vector = true) { // Bir met
 		// metinde başlangıç indeksinden başlayıp bitiş indeksi ile başlangıç indeksinin farkı kadar olan her yeri etiket olarak tanımla
 		for (int j=0;j<tagstring.length();j++) { // etiket ismini dolaş
 
-			if ((tagstring[j] == ']') or (tagstring[j] == '[')) { // içinde [ veya ] varsa etiket bozuktur
+			if ((tagstring[j] == ']') || (tagstring[j] == '[')) { // içinde [ veya ] varsa etiket bozuktur
 
 				//cout << "Bad tag!" << endl;
 				badtag = true;
